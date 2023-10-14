@@ -35,24 +35,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   // variable to store all the todo task from the local storage
   List<Map<String, dynamic>> todoList = [
-    {
-      'title': 'General Knowledge',
-      'description':
-          'General Knowledge questions and answers with explanation for interview, competitive examination and entrance test. Fully solved examples with detailed answer description, explanation are given and it would be easy to understand.',
-    },
-    {
-      'title': 'Science',
-      'description':
-          'Science questions and answers with explanation for interview, competitive examination and entrance test. Fully solved examples with detailed answer description, explanation are given and it would be easy to understand.',
-    },
+    {'title': 'General Knowledge', 'description': 'Test sub title'},
+    {'title': 'Science', 'description': 'Test sub title'},
   ];
 
   List<Map<String, dynamic>> finished = [
-    {
-      'title': 'Tangina',
-      'description':
-          'General Knowledge questions and answers with explanation for interview, competitive examination and entrance test. Fully solved examples with detailed answer description, explanation are given and it would be easy to understand.',
-    },
+    {'title': 'Tangina', 'description': 'Test sub title'},
   ];
 
   // void _incrementCounter() {
@@ -104,12 +92,12 @@ class _MyHomePageState extends State<MyHomePage> {
                       color: Colors.white,
                       child: ListTile(
                         title: Text(finished[index]["title"]),
+                        subtitle: Text(finished[index]["description"]),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
                               onPressed: () {
-                                // remove the task from the list
                                 setState(() {
                                   finished.removeAt(index);
                                 });
@@ -118,9 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                             IconButton(
                               onPressed: () {
-                                // remove the task from the list
                                 setState(() {
-                                  // add the task to the todoList
                                   todoList.add(finished[index]);
                                   finished.removeAt(index);
                                 });
@@ -152,6 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       color: Colors.white,
                       child: ListTile(
                         title: Text(todoList[index]["title"]),
+                        subtitle: Text(todoList[index]["description"]),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
