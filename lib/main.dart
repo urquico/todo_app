@@ -34,13 +34,30 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   // variable to store all the todo task from the local storage
-  List<String> todoList = [];
+  List<Map<String, dynamic>> todoList = [
+    {
+      'title': 'General Knowledge',
+      'description':
+          'General Knowledge questions and answers with explanation for interview, competitive examination and entrance test. Fully solved examples with detailed answer description, explanation are given and it would be easy to understand.',
+    },
+    {
+      'title': 'Science',
+      'description':
+          'Science questions and answers with explanation for interview, competitive examination and entrance test. Fully solved examples with detailed answer description, explanation are given and it would be easy to understand.',
+    },
+  ];
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  List<Map<String, dynamic>> finished = [
+    {
+      'title': 'Tangina',
+      'description':
+          'General Knowledge questions and answers with explanation for interview, competitive examination and entrance test. Fully solved examples with detailed answer description, explanation are given and it would be easy to understand.',
+    },
+  ];
+
+  // void _incrementCounter() {
+  //   setState(() {});
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -59,12 +76,132 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: const FullWidthFloatingActionButton(),
+      // add a list view to display all the todo task
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.only(
+            top: 10,
+            left: 30,
+            right: 30,
+          ),
+          child: Column(
+            // mainAxisAlignment: MainAxisAlignment.start,
+            // crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // display all finished tasks in a list view
+              if (finished.isNotEmpty) const Text("Finished Tasks"),
+
+              if (finished.isNotEmpty)
+                ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: finished.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      // add padding left and right
+                      margin: const EdgeInsets.only(top: 10),
+                      // set background to white
+                      color: Colors.white,
+                      child: ListTile(
+                        title: Text(finished[index]["title"]),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                // remove the task from the list
+                                setState(() {
+                                  finished.removeAt(index);
+                                });
+                              },
+                              icon: const Icon(Icons.delete),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                // remove the task from the list
+                                setState(() {
+                                  // add the task to the todoList
+                                  todoList.add(finished[index]);
+                                  finished.removeAt(index);
+                                });
+                              },
+                              icon: const Icon(Icons.refresh),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+
+              const SizedBox(height: 20),
+              if (todoList.isNotEmpty) const Center(child: Text("Tasks")),
+              const SizedBox(height: 10),
+              if (todoList.isEmpty) const Center(child: Text("All Done!")),
+
+              if (todoList.isNotEmpty)
+                ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: todoList.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      // add padding left and right
+                      margin: const EdgeInsets.only(top: 10),
+                      // set background to white
+                      color: Colors.white,
+                      child: ListTile(
+                        title: Text(todoList[index]["title"]),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                // remove the task from the list
+                                setState(() {
+                                  todoList.removeAt(index);
+                                });
+                              },
+                              icon: const Icon(Icons.delete),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                // remove the task from the list
+                                setState(() {
+                                  // add the task to the finished list
+                                  finished.add(todoList[index]);
+                                  todoList.removeAt(index);
+                                });
+                              },
+                              icon: const Icon(Icons.check),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              const SizedBox(height: 120),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
 
-class FullWidthFloatingActionButton extends StatelessWidget {
+class FullWidthFloatingActionButton extends StatefulWidget {
   const FullWidthFloatingActionButton({super.key});
+
+  @override
+  State<FullWidthFloatingActionButton> createState() =>
+      _FullWidthFloatingActionButtonState();
+}
+
+class _FullWidthFloatingActionButtonState
+    extends State<FullWidthFloatingActionButton> {
+  String title = '';
+  String description = '';
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +221,7 @@ class FullWidthFloatingActionButton extends StatelessWidget {
               builder: (BuildContext context) {
                 return Container(
                   height: MediaQuery.of(context).size.height,
-                  color: Colors.black,
+                  color: Colors.white,
                   child: Column(
                     children: [
                       Align(
@@ -93,14 +230,18 @@ class FullWidthFloatingActionButton extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 20.0),
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.transparent,
+                              backgroundColor: Colors.white,
                               shadowColor: Colors.transparent,
                             ),
                             child: const Icon(
                               Icons.close,
-                              color: Colors.white,
+                              color: Colors.black26,
                             ),
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () => {
+                              // remove the text from the input field when the modal is closed
+                              setState(() => {title = "", description = ""}),
+                              Navigator.pop(context)
+                            },
                           ),
                         ),
                       ),
@@ -114,14 +255,14 @@ class FullWidthFloatingActionButton extends StatelessWidget {
                                 maxLength: 30,
                                 decoration: const InputDecoration(
                                   labelText: 'Title',
-                                  labelStyle: TextStyle(color: Colors.white),
-                                  border: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                  ),
+                                  border: OutlineInputBorder(),
                                 ),
                                 style: const TextStyle(color: Colors.black),
+                                onChanged: (title) =>
+                                    setState(() => this.title = title),
                               ),
                             ),
+
                             // Text Area (Multiline Text Input)
                             Container(
                               padding: const EdgeInsets.all(16.0),
@@ -130,12 +271,14 @@ class FullWidthFloatingActionButton extends StatelessWidget {
                                 maxLength: 100,
                                 decoration: const InputDecoration(
                                   labelText: 'Enter task description',
-                                  labelStyle: TextStyle(color: Colors.white),
+                                  // labelStyle: TextStyle(color: Colors.white),
                                   border: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.black),
-                                  ),
+                                      // borderSide: BorderSide(color: Colors.black),
+                                      ),
                                 ),
-                                style: const TextStyle(color: Colors.black),
+                                // style: const TextStyle(color: Colors.black),
+                                onChanged: (description) => setState(
+                                    () => this.description = description),
                               ),
                             ),
                             // Button (Full Width)
@@ -144,11 +287,18 @@ class FullWidthFloatingActionButton extends StatelessWidget {
                               padding: const EdgeInsets.all(16.0),
                               child: ElevatedButton(
                                 onPressed: () {
-                                  // Add your button action here
+                                  // print(title);
+                                  // print(description);
                                 },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors
+                                      .black, // Set button background color to transparent
+                                  shadowColor: Colors
+                                      .transparent, // Remove button shadow
+                                ),
                                 child: const Text(
-                                  'Submit',
-                                  style: TextStyle(color: Colors.black),
+                                  'Add Task',
+                                  style: TextStyle(color: Colors.white),
                                 ),
                               ),
                             ),
