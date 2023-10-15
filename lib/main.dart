@@ -34,14 +34,9 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   // variable to store all the todo task from the local storage
-  List<Map<String, dynamic>> todoList = [
-    {'title': 'General Knowledge', 'description': 'Test sub title'},
-    {'title': 'Science', 'description': 'Test sub title'},
-  ];
+  List<Map<String, dynamic>> todoList = [];
 
-  List<Map<String, dynamic>> finished = [
-    {'title': 'Tangina', 'description': 'Test sub title'},
-  ];
+  List<Map<String, dynamic>> finished = [];
 
   // void _incrementCounter() {
   //   setState(() {});
@@ -63,7 +58,15 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-      floatingActionButton: const FullWidthFloatingActionButton(),
+      floatingActionButton: FullWidthFloatingActionButton(
+        todoList: todoList,
+        onTodoListChanged: (newList) {
+          // Update the parent's todoList with the modified list from the child
+          todoList.clear();
+          todoList.addAll(newList);
+          setState(() {});
+        },
+      ),
       // add a list view to display all the todo task
       body: SingleChildScrollView(
         child: Container(
@@ -77,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
             // crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // display all finished tasks in a list view
-              if (finished.isNotEmpty) const Text("Finished Tasks"),
+              if (finished.isNotEmpty) const Text("Completed"),
 
               if (finished.isNotEmpty)
                 ListView.builder(
@@ -178,7 +181,11 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class FullWidthFloatingActionButton extends StatefulWidget {
-  const FullWidthFloatingActionButton({super.key});
+  final List<Map<String, dynamic>> todoList;
+  final Function(List<Map<String, dynamic>>) onTodoListChanged;
+
+  const FullWidthFloatingActionButton(
+      {super.key, required this.todoList, required this.onTodoListChanged});
 
   @override
   State<FullWidthFloatingActionButton> createState() =>
@@ -274,8 +281,18 @@ class _FullWidthFloatingActionButtonState
                               padding: const EdgeInsets.all(16.0),
                               child: ElevatedButton(
                                 onPressed: () {
-                                  // print(title);
-                                  // print(description);
+                                  List<Map<String, dynamic>> newTodoList =
+                                      List.from(widget.todoList);
+
+                                  newTodoList.add({
+                                    'title': title,
+                                    'description': description
+                                  });
+
+                                  // Notify the parent widget about the change
+                                  widget.onTodoListChanged(newTodoList);
+
+                                  Navigator.pop(context);
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors
